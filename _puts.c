@@ -6,7 +6,7 @@
  * Return: number of characters
  */
 
-int _puts (char *string)
+int _puts(char *string)
 {
 	int c = 0, i;
 
