@@ -1,17 +1,18 @@
 #include "main.h"
 
 /**
- * _puts - print string char by char
- * @string: - pointer to string
- * Return: number of char printed
- *
+ * _puts - prints string
+ * @string: Pointer to string
+ * Return: number of characters
  */
 
 int _puts(char *string)
 {
-	int chars = 0;
+	int c = 0, i;
 
-	while (*string)
-		chars += _putchar(*string++);
-	return (chars);
+	for (i = 0; string[i] != '\0'; i++)
+	{
+		c += _putchar(string[i]);
+	}
+	return (c);
 }

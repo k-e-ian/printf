@@ -8,12 +8,12 @@
 
 int _printf(const char *format, ...);
 
-int _putchar(char c);
-
 int _puts(char *string);
 
 int _putd(int dec);
 
 int biC(unsigned int base10);
+
+int _putchar(char c);
 
 #endif
