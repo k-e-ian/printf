@@ -1,49 +1,47 @@
 #include "main.h"
 
 /**
- * _printf - print on stdout, considersing cases 's' and 'c' and '%c'
- * @format: pointer to const directive
- * Return: num of characters printed
+ * _printf - produces output according to a format
+ * @format: format string containing the characters and the specifiers
+ * Description: this function will call the get_print() function that will
+ * determine which printing function to call depending on the conversion
+ * specifiers contained into fmt
+ * Return: length of the formatted output string
  */
 int _printf(const char *format, ...)
 {
-	int num = 0, index;/* num to keep track of characters being printed */
-	/* index to allow looping through each character at a time */
-	va_list args; /*creating a variadic list called args */
+	int (*pfunc)(va_list, flags_t *);
+	const char *p;
+	va_list arguments;
+	flags_t flags = {0, 0, 0};
 
-	va_start(args, format);/*initialises args*/
-	for (index = 0; format[index] != '\0'; ) /* (hello\0) */
+	register int count = 0;
+
+	va_start(arguments, format);
+	if (!format || (format[0] == '%' && !format[1]))
+		return (-1);
+	if (format[0] == '%' && format[1] == ' ' && !format[2])
+		return (-1);
+	for (p = format; *p; p++)
 	{
-		if (format[index] != '%') /*_printf("hello") */
+		if (*p == '%')
 		{
-			num += _putchar(format[index]);
-			index++;
-		}
-		else if (format[index] == '%' && format[index + 1] != ' ')
-		{/*if format[index + 1] is either 'c' 's' or '%'*/
-			switch (format[index + 1]) /* _printf("%c hello", 'I') */
+			p++;
+			if (*p == '%')
 			{
-				case 'c':
-					num += _putchar(va_arg(args, int));
-					break;
-				case 's': /** _printf("%s", "hello there"); **/
-					num += _puts(va_arg(args, char *));
-					break;
-				case '%':
-					num += _putchar('%');
-					break;
-				case 'd': /** _printf("%d%d", 500, -2222); */
-				case 'i':/** _printf("%i%i", 20, -30); */
-					num += _putd(va_arg(args, int));
-					break;
-				case 'b':
-					num += biC(va_arg(args, unsigned int));
-				default:
-					break;
+				count += _putchar('%');
+				continue;
 			}
-			index += 2;
-		}
+			while (get_flag(*p, &flags))
+				p++;
+			pfunc = get_print(*p);
+			count += (pfunc)
+				? pfunc(arguments, &flags)
+				: _printf("%%%c", *p);
+		} else
+			count += _putchar(*p);
 	}
-	va_end(args);
-	return (num);
+	_putchar(-1);
+	va_end(arguments);
+	return (count);
 }
